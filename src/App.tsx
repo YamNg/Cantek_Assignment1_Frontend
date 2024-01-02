@@ -4,9 +4,7 @@ import TodoSection from './components/TodoSection'
 function App() {
 
   return (
-    <>
-      <TodoSection />
-    </>
+    <TodoSection />
   )
 }
 

@@ -1,32 +1,71 @@
 import { TodoItemModel } from "../models/TodoItemModel";
-import { useState } from 'react'
+import { useState } from "react";
 import { TodoItemUpdateForm } from "./TodoItemUpdateForm";
 import { FaEdit } from "react-icons/fa";
-import { IoIosCloseCircleOutline } from "react-icons/io";
 import { FaRegTrashCan } from "react-icons/fa6";
+import { TodoItemStatus } from "../constants/TodoItemStatus";
+import { IconContext } from "react-icons";
+import { IoIosCloseCircleOutline } from "react-icons/io";
 
-const TodoItem = ({ model, updateItemHandler, deleteItemHandler }: { model: TodoItemModel, updateItemHandler: (item: TodoItemModel) => void, deleteItemHandler: (id: string) => void}): JSX.Element => {
-    const [isUpdateMode, setIsUpdateMode] = useState(false);
+type TodoItemProps = {
+  model: TodoItemModel;
+  updateItemHandler: (item: TodoItemModel) => void;
+  deleteItemHandler: (id: string) => void;
+};
 
-    const deleteTodoItem = async (event: React.FormEvent, _id: string) => {
-        event.preventDefault();
-        deleteItemHandler(_id);
-    }
+const TodoItem = ({
+  model,
+  updateItemHandler,
+  deleteItemHandler,
+}: TodoItemProps) => {
+  const deleteTodoItem = async (event: React.FormEvent, _id: string) => {
+    event.preventDefault();
+    deleteItemHandler(_id);
+  };
 
-    return (
-        <li className="flex gap-2">
-            {model.task} - {model.status}
-            <button onClick={() => setIsUpdateMode(!isUpdateMode)}>
-                {
-                    isUpdateMode ? <IoIosCloseCircleOutline /> : <FaEdit />
-                }
-            </button>
-            <button onClick={(event) => deleteTodoItem(event, model._id ?? "")}><FaRegTrashCan /></button>
-            {
-                isUpdateMode && <TodoItemUpdateForm model={model} updateItemHandler={updateItemHandler}/>
-            }
-        </li>
-    )
-}
+  const [isUpdateMode, setIsUpdateMode] = useState(false);
+
+  return (
+    <>
+      <li>
+        <div
+          className={`grid grid-flow-col grid-col-12 ${
+            isUpdateMode ? "border-2 border-solid border-black rounded-t" : ""
+          }`}
+        >
+          <p className="col-span-11 p-4">
+            {model.task} - {TodoItemStatus.getStatusLabel(model.status)}
+          </p>
+          <div className={`w-full h-full flex gap-3`}>
+            <IconContext.Provider value={{ color: "black", size: "1.2rem" }}>
+              {!isUpdateMode ? (
+                <>
+                  <button onClick={() => setIsUpdateMode(!isUpdateMode)}>
+                    <FaEdit />
+                  </button>
+                  <button
+                    onClick={(event) => deleteTodoItem(event, model._id ?? "")}
+                  >
+                    <FaRegTrashCan />
+                  </button>
+                </>
+              ) : (
+                <button onClick={() => setIsUpdateMode(!isUpdateMode)}>
+                  <IoIosCloseCircleOutline />
+                </button>
+              )}
+            </IconContext.Provider>
+          </div>
+        </div>
+        {isUpdateMode && (
+          <TodoItemUpdateForm
+            model={model}
+            updateItemHandler={updateItemHandler}
+          />
+        )}
+      </li>
+    </>
+  );
+};
 
 export default TodoItem;

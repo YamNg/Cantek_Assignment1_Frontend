@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { TodoItemModel } from '../models/TodoItemModel'
 import { TodoItemDeleteResultModel } from '../models/TodoItemDeleteResultModel'
-const baseUrl = 'https://todo-backend-i64r.onrender.com/todos'
+const baseUrl = 'http://localhost:3000/todos'
 
 const getAll = async () : Promise<TodoItemModel[]> => {
     const response = await axios.get(baseUrl)
